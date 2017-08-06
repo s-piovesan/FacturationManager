@@ -1,0 +1,929 @@
+---
+swagger: "2.0"
+info:
+  description: "API De gestion de la facturation"
+  version: "1.0.0"
+  title: "Facturation API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "sebastien.piovesan@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost:3000"
+basePath: "/v1"
+tags:
+- name: "customer"
+  description: "gestion des customers"
+- name: "customers"
+  description: "gestion des customers"
+- name: "facture"
+  description: "gestion des factures"
+- name: "ligne"
+  description: "gestion des lignes de facture"
+- name: "product"
+  description: "gestion des products"
+schemes:
+- "http"
+paths:
+  /customer:
+    post:
+      tags:
+      - "customer"
+      summary: "Ajoute un nouveau customer"
+      description: ""
+      operationId: "addCustomer"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "description d'un customer à ajouter a la base de données"
+        required: true
+        schema:
+          $ref: "#/definitions/body_customer"
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - facturation_auth:
+        - "write:customers"
+        - "read:customers"
+      x-swagger-router-controller: "Customer"
+    put:
+      tags:
+      - "customer"
+      summary: "Met à jour un customer existant"
+      description: ""
+      operationId: "updateCustomer"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "description d'un customer à ajouter a la base de données"
+        required: true
+        schema:
+          $ref: "#/definitions/body_customer"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Customer not found"
+        405:
+          description: "Validation exception"
+      security:
+      - facturation_auth:
+        - "write:customers"
+        - "read:customers"
+      x-swagger-router-controller: "Customer"
+  /customer/{customerId}:
+    get:
+      tags:
+      - "customer"
+      summary: "Find customer by ID"
+      description: "Returns a single customer"
+      operationId: "getCustomerById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "customerId"
+        in: "path"
+        description: "ID of customer to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/customer_response_200"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Customer not found"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Customer"
+    post:
+      tags:
+      - "customer"
+      summary: "Updates a customer in the store with form data"
+      description: ""
+      operationId: "updateCustomerWithForm"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "customerId"
+        in: "path"
+        description: "ID of customer that needs to be updated"
+        required: true
+        type: "string"
+      - name: "name"
+        in: "formData"
+        description: "Updated name of the customer"
+        required: false
+        type: "string"
+      - name: "address"
+        in: "formData"
+        description: "Updated address of the customer"
+        required: false
+        type: "string"
+      - name: "zipcode"
+        in: "formData"
+        description: "Updated zipcode of the customer"
+        required: false
+        type: "string"
+      - name: "city"
+        in: "formData"
+        description: "Updated city of the customer"
+        required: false
+        type: "string"
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - facturation_auth:
+        - "write:customers"
+        - "read:customers"
+      x-swagger-router-controller: "Customer"
+    delete:
+      tags:
+      - "customer"
+      summary: "Deletes a customer"
+      description: ""
+      operationId: "deleteCustomer"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "api_key"
+        in: "header"
+        required: false
+        type: "string"
+      - name: "customerId"
+        in: "path"
+        description: "Customer id to delete"
+        required: true
+        type: "string"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Customer not found"
+      security:
+      - facturation_auth:
+        - "write:customers"
+        - "read:customers"
+      x-swagger-router-controller: "Customer"
+  /customers:
+    get:
+      tags:
+      - "customers"
+      summary: "Find customers"
+      description: "Returns all customers"
+      operationId: "getCustomers"
+      produces:
+      - "application/xml"
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/customers_response_200"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "no customer not found"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Customers"
+  /facture:
+    post:
+      tags:
+      - "facture"
+      summary: "Ajoute une nouvelle facture"
+      description: ""
+      operationId: "addFacture"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "description d'une facture à ajouter a la base de données"
+        required: true
+        schema:
+          $ref: "#/definitions/body_fee"
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - facturation_auth:
+        - "write:factures"
+        - "read:factures"
+      x-swagger-router-controller: "Facture"
+    put:
+      tags:
+      - "facture"
+      summary: "Met à jour un facture existant"
+      description: ""
+      operationId: "updateFacture"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "description d'un facture à ajouter a la base de données"
+        required: true
+        schema:
+          $ref: "#/definitions/body_fee"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Facture not found"
+        405:
+          description: "Validation exception"
+      security:
+      - facturation_auth:
+        - "write:factures"
+        - "read:factures"
+      x-swagger-router-controller: "Facture"
+  /facture/{factureId}:
+    get:
+      tags:
+      - "facture"
+      summary: "Find facture by ID"
+      description: "Returns a single facture"
+      operationId: "getFactureById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "factureId"
+        in: "path"
+        description: "ID of facture to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/fee_response_200"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Facture not found"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Facture"
+    post:
+      tags:
+      - "facture"
+      summary: "Updates a facture in the store with form data"
+      description: ""
+      operationId: "updateFactureWithForm"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "factureId"
+        in: "path"
+        description: "ID of facture that needs to be updated"
+        required: true
+        type: "string"
+      - name: "status"
+        in: "formData"
+        required: true
+        type: "string"
+        format: "Order Status"
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - facturation_auth:
+        - "write:factures"
+        - "read:factures"
+      x-swagger-router-controller: "Facture"
+    delete:
+      tags:
+      - "facture"
+      summary: "Deletes a facture"
+      description: ""
+      operationId: "deleteFacture"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "api_key"
+        in: "header"
+        required: false
+        type: "string"
+      - name: "factureId"
+        in: "path"
+        description: "Facture id to delete"
+        required: true
+        type: "string"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Facture not found"
+      security:
+      - facturation_auth:
+        - "write:factures"
+        - "read:factures"
+      x-swagger-router-controller: "Facture"
+  /ligne:
+    post:
+      tags:
+      - "ligne"
+      summary: "Ajoute une nouvelle ligne"
+      description: ""
+      operationId: "addLigne"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "description d'une ligne à ajouter a la base de données"
+        required: true
+        schema:
+          $ref: "#/definitions/body_line"
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - facturation_auth:
+        - "write:lignes"
+        - "read:lignes"
+      x-swagger-router-controller: "Ligne"
+    put:
+      tags:
+      - "ligne"
+      summary: "Met à jour un ligne existant"
+      description: ""
+      operationId: "updateLigne"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "description d'un ligne à ajouter a la base de données"
+        required: true
+        schema:
+          $ref: "#/definitions/body_line"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Ligne not found"
+        405:
+          description: "Validation exception"
+      security:
+      - facturation_auth:
+        - "write:lignes"
+        - "read:lignes"
+      x-swagger-router-controller: "Ligne"
+  /ligne/{ligneId}:
+    get:
+      tags:
+      - "ligne"
+      summary: "Find ligne by ID"
+      description: "Returns a single ligne"
+      operationId: "getLigneById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "ligneId"
+        in: "path"
+        description: "ID of ligne to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/line_response_200"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Ligne not found"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Ligne"
+    post:
+      tags:
+      - "ligne"
+      summary: "Updates a ligne in the store with form data"
+      description: ""
+      operationId: "updateLigneWithForm"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "ligneId"
+        in: "path"
+        description: "ID of ligne that needs to be updated"
+        required: true
+        type: "string"
+      - name: "factureId"
+        in: "formData"
+        required: true
+        type: "string"
+      - name: "quantity"
+        in: "formData"
+        required: true
+        type: "integer"
+        format: "int32"
+      - name: "price"
+        in: "formData"
+        required: true
+        type: "number"
+        format: "double"
+      - name: "description"
+        in: "formData"
+        required: true
+        type: "string"
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - facturation_auth:
+        - "write:lignes"
+        - "read:lignes"
+      x-swagger-router-controller: "Ligne"
+    delete:
+      tags:
+      - "ligne"
+      summary: "Deletes a ligne"
+      description: ""
+      operationId: "deleteLigne"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "api_key"
+        in: "header"
+        required: false
+        type: "string"
+      - name: "ligneId"
+        in: "path"
+        description: "Ligne id to delete"
+        required: true
+        type: "string"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Ligne not found"
+      security:
+      - facturation_auth:
+        - "write:lignes"
+        - "read:lignes"
+      x-swagger-router-controller: "Ligne"
+  /product:
+    post:
+      tags:
+      - "product"
+      summary: "Ajoute une nouvelle product"
+      description: ""
+      operationId: "addProduct"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "description d'une product à ajouter a la base de données"
+        required: true
+        schema:
+          $ref: "#/definitions/body_product"
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - facturation_auth:
+        - "write:products"
+        - "read:products"
+      x-swagger-router-controller: "Product"
+    put:
+      tags:
+      - "product"
+      summary: "Met à jour un product existant"
+      description: ""
+      operationId: "updateProduct"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "description d'un product à ajouter a la base de données"
+        required: true
+        schema:
+          $ref: "#/definitions/body_product"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Product not found"
+        405:
+          description: "Validation exception"
+      security:
+      - facturation_auth:
+        - "write:products"
+        - "read:products"
+      x-swagger-router-controller: "Product"
+  /product/{productId}:
+    get:
+      tags:
+      - "product"
+      summary: "Find product by ID"
+      description: "Returns a single product"
+      operationId: "getProductById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "productId"
+        in: "path"
+        description: "ID of product to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/product_response_200"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Product not found"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Product"
+    post:
+      tags:
+      - "product"
+      summary: "Updates a product in the store with form data"
+      description: ""
+      operationId: "updateProductWithForm"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "productId"
+        in: "path"
+        description: "ID of product that needs to be updated"
+        required: true
+        type: "string"
+      - name: "description"
+        in: "formData"
+        required: true
+        type: "string"
+      - name: "prixunitaire"
+        in: "formData"
+        required: true
+        type: "number"
+        format: "double"
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - facturation_auth:
+        - "write:products"
+        - "read:products"
+      x-swagger-router-controller: "Product"
+    delete:
+      tags:
+      - "product"
+      summary: "Deletes a product"
+      description: ""
+      operationId: "deleteProduct"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "api_key"
+        in: "header"
+        required: false
+        type: "string"
+      - name: "productId"
+        in: "path"
+        description: "Product id to delete"
+        required: true
+        type: "string"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Product not found"
+      security:
+      - facturation_auth:
+        - "write:products"
+        - "read:products"
+      x-swagger-router-controller: "Product"
+  /products:
+    get:
+      tags:
+      - "products"
+      summary: "Find products"
+      description: "Returns all products"
+      operationId: "getProducts"
+      produces:
+      - "application/xml"
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/products_response_200"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "no product found"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Products"
+securityDefinitions:
+  facturation_auth:
+    type: "oauth2"
+    authorizationUrl: "http://localhost:3000/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:customers: "modify customers in your account"
+      read:customers: "read your customers"
+      write:factures: "modify factures in your account"
+      read:factures: "read your factures"
+      write:lignes: "modify factures in your account"
+      read:lignes: "read your factures"
+      write:products: "modify factures in your account"
+      read:products: "read your factures"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  Facture:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      customerId:
+        type: "string"
+      creation_date:
+        type: "string"
+        format: "date-time"
+      status:
+        type: "string"
+        description: "Order Status"
+        enum:
+        - "under_construction"
+        - "validated"
+        - "edited"
+    xml:
+      name: "Facture"
+  Ligne:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      factureId:
+        type: "string"
+      productId:
+        type: "string"
+      description:
+        type: "string"
+      quantite:
+        type: "integer"
+        format: "int64"
+      price:
+        type: "number"
+        format: "double"
+    xml:
+      name: "Ligne"
+  Product:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      description:
+        type: "string"
+      price:
+        type: "number"
+        format: "double"
+    xml:
+      name: "Product"
+  Customer:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      name:
+        type: "string"
+      address:
+        type: "string"
+      zipcode:
+        type: "string"
+      city:
+        type: "string"
+    xml:
+      name: "Customer"
+  ApiResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+      message:
+        type: "string"
+  customer_response_200:
+    properties:
+      _id:
+        type: "string"
+      name:
+        type: "string"
+      address:
+        type: "string"
+      zipcode:
+        type: "string"
+      city:
+        type: "string"
+    xml:
+      name: "Customer"
+  line_response_200:
+    properties:
+      _id:
+        type: "string"
+      factureId:
+        type: "string"
+      productId:
+        type: "string"
+      description:
+        type: "string"
+      quantite:
+        type: "integer"
+        format: "int64"
+      price:
+        type: "number"
+        format: "double"
+    xml:
+      name: "Ligne"
+  product_response_200:
+    properties:
+      _id:
+        type: "string"
+      description:
+        type: "string"
+      price:
+        type: "number"
+        format: "double"
+    xml:
+      name: "Product"
+  fee_response_200:
+    properties:
+      _id:
+        type: "string"
+      customerId:
+        type: "string"
+      creation_date:
+        type: "string"
+        format: "date-time"
+      status:
+        type: "string"
+        description: "Order Status"
+        enum:
+        - "under_construction"
+        - "validated"
+        - "edited"
+    xml:
+      name: "Facture"
+  customers_response_200:
+    properties:
+      customers:
+        type: "array"
+        xml:
+          name: "Customers"
+          wrapped: true
+        items:
+          $ref: "#/definitions/Customer"
+  products_response_200:
+    properties:
+      customers:
+        type: "array"
+        xml:
+          name: "Products"
+          wrapped: true
+        items:
+          $ref: "#/definitions/Product"
+  body_fee:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      customerId:
+        type: "string"
+      creation_date:
+        type: "string"
+        format: "date-time"
+      status:
+        type: "string"
+        description: "Order Status"
+        enum:
+        - "under_construction"
+        - "validated"
+        - "edited"
+    xml:
+      name: "Facture"
+  body_line:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      factureId:
+        type: "string"
+      productId:
+        type: "string"
+      description:
+        type: "string"
+      quantite:
+        type: "integer"
+        format: "int64"
+      price:
+        type: "number"
+        format: "double"
+    xml:
+      name: "Ligne"
+  body_product:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      description:
+        type: "string"
+      price:
+        type: "number"
+        format: "double"
+    xml:
+      name: "Product"
+  body_customer:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      name:
+        type: "string"
+      address:
+        type: "string"
+      zipcode:
+        type: "string"
+      city:
+        type: "string"
+    xml:
+      name: "Customer"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"

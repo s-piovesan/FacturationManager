@@ -1,0 +1,22 @@
+<div *ngIf="product">
+  <md-card style="width: 30%">
+    <md-card-header>
+      <md-card-title>{{product.name}}</md-card-title>
+    </md-card-header>
+    <md-card-content>
+      <div><label>id: </label>{{product._id}}</div>
+      <div>
+        <label>Désignation: </label>
+        <input [(ngModel)]="product.description" placeholder="Désignation" />
+      </div>
+      <div>
+        <label>Prix: </label>
+        <input [(ngModel)]="product.price" placeholder="Prix" />
+      </div>
+    </md-card-content>
+    <md-card-actions>
+      <button md-button (click)="goBack()"> Back </button>
+      <button md-button (click)="updateProduct()"> Update </button>
+    </md-card-actions>
+  </md-card>
+  <div>

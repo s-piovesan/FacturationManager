@@ -1,0 +1,40 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<h2>Clients</h2>
+
+<form>
+  <md-input-container style="width:30%">
+    <input mdInput [(ngModel)]="newCustomer.name" placeholder="Nom" name="name">
+  </md-input-container>
+  <md-input-container style="width:30%">
+    <input mdInput [(ngModel)]="newCustomer.address" placeholder="Rue" name="address">
+  </md-input-container>
+  <md-input-container style="width:10%">
+    <input mdInput [(ngModel)]="newCustomer.zipcode" placeholder="CP" name="zipcode">
+  </md-input-container>
+  <md-input-container style="width:10%">
+    <input mdInput [(ngModel)]="newCustomer.city" placeholder="Ville" name="city">
+  </md-input-container>
+  <button md-raised-button (click)="createCustomer(newCustomer)">Ajouter un client</button>
+
+  <md-list>
+    <md-list-item *ngFor="let customer of customers" (click)="showInfo(customer)">
+
+        <span style="display:inline-block;width:30%">
+            {{customer.name}}
+        </span>
+        <span style="display:inline-block;width:30%">
+            {{customer.address}}
+        </span>
+        <span style="display:inline-block;width:10%">
+            {{customer.zipcode}}
+        </span>
+        <span style="display:inline-block;width:10%">
+            {{customer.city}}
+        </span>
+        <span style="display:inline-block;width:20%">
+          <button md-raised-button (click)="deleteCustomer(customer); $event.stopPropagation()">Delete</button>
+        </span>
+
+    </md-list-item>
+  </md-list>
+</form>

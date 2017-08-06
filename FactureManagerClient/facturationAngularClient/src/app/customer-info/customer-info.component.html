@@ -1,0 +1,30 @@
+<div *ngIf="customer">
+  <md-card style="width: 30%">
+    <md-card-header>
+      <md-card-title>{{customer.name}}</md-card-title>
+    </md-card-header>
+    <md-card-content>
+      <div><label>id: </label>{{customer._id}}</div>
+      <div>
+        <label>name: </label>
+        <input [(ngModel)]="customer.name" placeholder="prénom nom / raison sociale" />
+      </div>
+      <div>
+        <label>Rue: </label>
+        <input [(ngModel)]="customer.address" placeholder="rue" />
+      </div>
+      <div>
+        <label>Code Postal: </label>
+        <input [(ngModel)]="customer.zipcode" placeholder="code postal" />
+      </div>
+      <div>
+        <label>Ville: </label>
+        <input [(ngModel)]="customer.city" placeholder="ville" />
+      </div>
+    </md-card-content>
+    <md-card-actions>
+      <button md-button (click)="goBack()"> Back </button>
+      <button md-button (click)="updateCustomer()"> Update </button>
+    </md-card-actions>
+  </md-card>
+  <div>

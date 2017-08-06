@@ -1,0 +1,28 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<h2>Produits</h2>
+
+<form>
+  <md-input-container style="width:30%">
+    <input mdInput [(ngModel)]="newProduct.description" placeholder="Designation" name="description">
+  </md-input-container>
+  <md-input-container style="width:30%">
+    <input mdInput [(ngModel)]="newProduct.price" placeholder="Prix" name="price">
+  </md-input-container>
+  <button md-raised-button (click)="createProduct(newProduct)">Ajouter un produit</button>
+
+  <md-list>
+    <md-list-item *ngFor="let product of products" (click)="showInfo(product)">
+
+        <span style="display:inline-block;width:30%">
+            {{product.description}}
+        </span>
+        <span style="display:inline-block;width:30%">
+            {{product.price}}
+        </span>
+        <span style="display:inline-block;width:20%">
+          <button md-raised-button (click)="deleteProduct(product); $event.stopPropagation()">Delete</button>
+        </span>
+
+    </md-list-item>
+  </md-list>
+</form>
