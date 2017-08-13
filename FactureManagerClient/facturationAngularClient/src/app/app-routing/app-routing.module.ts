@@ -8,11 +8,14 @@ import { CustomersComponent } from '../customers/customers.component';
 import { ProductInfoComponent } from '../product-info/product-info.component';
 import { ProductsComponent } from '../products/products.component';
 
+import {InvoiceComponent} from '../invoice/invoice.component';
+
 const routes: Routes = [
   { path: 'customerinformation/:id', component: CustomerInfoComponent },
   { path: 'customers', component: CustomersComponent },
   { path: 'productinformation/:id', component: ProductInfoComponent },
-  { path: 'products', component: ProductsComponent }
+  { path: 'products', component: ProductsComponent },
+  { path: 'invoice', component: InvoiceComponent }
 ];
 
 @NgModule({

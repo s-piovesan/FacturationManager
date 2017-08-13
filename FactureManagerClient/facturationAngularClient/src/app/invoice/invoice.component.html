@@ -1,0 +1,111 @@
+<div id="printSection">
+  <div class="invoice">
+            <div class="invoice-header">
+              <div class="row section">
+                <div class="col s6">
+                  <img src="images/generic-logo.png" alt="company logo">
+                  <p>
+                    <br>
+                    <span class="strong">Martine PIOVESAN</span>
+                    <br>
+                    <span>04 rue Gicquel</span>
+                    <br>
+                    <span>35580</span> <span>GUIGNEN</span>
+                    <br>
+                    <span>02 99 92 25 79</span>
+                  </p>
+                </div>
+
+                <div class="col s6">
+                  <div class="invoce-company-address right-align">
+                    <span class="invoice-icon"><i class="mdi-social-location-city cyan-text"></i></span>
+
+                    <p><span class="strong">{{customer.name}}</span>
+                      <br>
+                      <span>{{customer.address}}</span>
+                      <br>
+                      <span>{{customer.zipcode}}</span> <span>{{customer.city}}</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="invoice-lable">
+              <div class="row">
+                <div class="col s12 grey lighten-2">
+                  <h4 class="black-text invoice-text">FACTURE MT_A_124563</h4>
+                </div>
+              </div>
+            </div>
+
+            <div class="invoice-table">
+              <div class="row">
+                <div class="col s12">
+                  <table class="responsive-table">
+                    <thead>
+                      <tr>
+                        <th data-field="item">Libellé</th>
+                        <th data-field="quantity">Quantité</th>
+                        <th data-field="uprice">Prix unitaire</th>
+                        <th data-field="price">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="category bold">
+                          <th colspan="4">Livraison du 02 mai 2017</th>
+                      </tr>
+                      <tr>
+                        <td>Ourlet</td>
+                        <td>28</td>
+                        <td>4,00 €</td>
+                        <td>112,00 €</td>
+                      </tr>
+                      <tr>
+                        <td>Ourlet ( robe, jupe )</td>
+                        <td>3</td>
+                        <td>4,00 €</td>
+                        <td>12,00 €</td>
+                      </tr>
+                      <tr>
+                        <td>Bas de manches</td>
+                        <td>5</td>
+                        <td>5,00 €</td>
+                        <td>25,00 €</td>
+                      </tr>
+                      <tr>
+                        <td>Reprise taille jean's</td>
+                        <td>1</td>
+                        <td>5,00 €</td>
+                        <td>5,00 €</td>
+                      </tr>
+                      <tr>
+                        <td colspan="2"></td>
+                        <td class="grey lighten-2 black-text">Total</td>
+                        <td class="grey lighten-2 strong black-text">5871,90 €</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="invoice-footer">
+              <div class="row">
+                <div class="col s6">
+                  <p class="strong">Moyen de paiement :</p>
+                  <ul>
+                    <li>You know, being a test pilot isn't always the healthiest business in the world.</li>
+                    <li>We predict too much for the next year and yet far too little for the next 10.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<div class="fixed-action-btn">
+  <a class="btn-floating btn-large" (click)="print()">
+        <i class="large material-icons">print</i>
+  </a>
+</div>

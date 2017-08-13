@@ -26,3 +26,19 @@ nav a:hover {
 nav a.active {
   color: #039be5;
 }
+.menu-container {
+  width: 500px;
+  height: 300px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.menu-sidenav-content {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-sidenav {
+  padding: 20px;
+}

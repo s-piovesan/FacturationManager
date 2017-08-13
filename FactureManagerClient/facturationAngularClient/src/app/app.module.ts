@@ -12,6 +12,9 @@ import { ProductInfoComponent } from './product-info/product-info.component';
 import { ProductsComponent } from './products/products.component';
 import { ProductService } from './product.service';
 
+import { InvoiceComponent } from './invoice/invoice.component';
+
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing/app-routing.module';
@@ -40,6 +43,7 @@ import { MaterialModule, MdCoreModule, MdToolbarModule, MdSidenavModule, MdButto
     CustomerInfoComponent,
     ProductsComponent,
     ProductInfoComponent,
+    InvoiceComponent,
   ],
   bootstrap: [AppComponent],
   providers: [CustomerService, ProductService],
