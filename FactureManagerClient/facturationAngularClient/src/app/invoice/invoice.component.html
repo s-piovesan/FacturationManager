@@ -1,5 +1,5 @@
 <div id="printSection">
-  <div class="invoice">
+  <div class="invoice" *ngIf="invoice">
             <div class="invoice-header">
               <div class="row section">
                 <div class="col s6">
@@ -16,7 +16,7 @@
                   </p>
                 </div>
 
-                <div class="col s6">
+                <div class="col s6" *ngIf="customer">
                   <div class="invoce-company-address right-align">
                     <span class="invoice-icon"><i class="mdi-social-location-city cyan-text"></i></span>
 

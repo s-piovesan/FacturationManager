@@ -42,13 +42,12 @@ export class InvoiceComponent implements OnInit {
     }
 
   ngOnInit() {
-    this.invoiceService.getInvoiceWithCustomerId("5984c7249922b1037cb7807").then(
+    this.invoiceService.getInvoiceWithCustomerId("5984c7249922b1037cb78077").then(
       (invoice) => {
         this.invoice = invoice;
         this.customerService.getCustomer(invoice.customerId).then(
           (customer) => {
             this.customer = customer;
-            console.log(this);
         })
       });
   }
