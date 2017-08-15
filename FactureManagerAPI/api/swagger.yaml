@@ -17,10 +17,10 @@ tags:
   description: "gestion des customers"
 - name: "customers"
   description: "gestion des customers"
-- name: "facture"
-  description: "gestion des factures"
+- name: "invoice"
+  description: "gestion des invoices"
 - name: "ligne"
-  description: "gestion des lignes de facture"
+  description: "gestion des lignes de invoice"
 - name: "product"
   description: "gestion des products"
 schemes:
@@ -209,13 +209,13 @@ paths:
       security:
       - api_key: []
       x-swagger-router-controller: "Customers"
-  /facture:
+  /invoice:
     post:
       tags:
-      - "facture"
+      - "invoice"
       summary: "Ajoute une nouvelle facture"
       description: ""
-      operationId: "addFacture"
+      operationId: "addInvoice"
       consumes:
       - "application/json"
       - "application/xml"
@@ -228,21 +228,21 @@ paths:
         description: "description d'une facture à ajouter a la base de données"
         required: true
         schema:
-          $ref: "#/definitions/body_fee"
+          $ref: "#/definitions/body_invoice"
       responses:
         405:
           description: "Invalid input"
       security:
       - facturation_auth:
-        - "write:factures"
-        - "read:factures"
-      x-swagger-router-controller: "Facture"
+        - "write:invoices"
+        - "read:invoices"
+      x-swagger-router-controller: "Invoice"
     put:
       tags:
-      - "facture"
-      summary: "Met à jour un facture existant"
+      - "invoice"
+      summary: "Met à jour un invoice existant"
       description: ""
-      operationId: "updateFacture"
+      operationId: "updateInvoice"
       consumes:
       - "application/json"
       - "application/xml"
@@ -252,65 +252,93 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        description: "description d'un facture à ajouter a la base de données"
+        description: "description d'un invoice à ajouter a la base de données"
         required: true
         schema:
-          $ref: "#/definitions/body_fee"
+          $ref: "#/definitions/body_invoice"
       responses:
         400:
           description: "Invalid ID supplied"
         404:
-          description: "Facture not found"
+          description: "Invoice not found"
         405:
           description: "Validation exception"
       security:
       - facturation_auth:
-        - "write:factures"
-        - "read:factures"
-      x-swagger-router-controller: "Facture"
-  /facture/{factureId}:
+        - "write:invoices"
+        - "read:invoices"
+      x-swagger-router-controller: "Invoice"
+  /customer/{customerId}/invoice/:
     get:
       tags:
-      - "facture"
-      summary: "Find facture by ID"
-      description: "Returns a single facture"
-      operationId: "getFactureById"
+      - "invoice"
+      summary: "Find current invoice by customer ID"
+      description: "Returns the current invoice (status opened) for the customer in parameter"
+      operationId: "getCurrentInvoiceByCustomerId"
       produces:
       - "application/xml"
       - "application/json"
       parameters:
-      - name: "factureId"
+      - name: "customerId"
         in: "path"
-        description: "ID of facture to return"
+        description: "ID of customer"
         required: true
         type: "string"
       responses:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/fee_response_200"
+            $ref: "#/definitions/invoice_response_200"
         400:
           description: "Invalid ID supplied"
         404:
-          description: "Facture not found"
+          description: "Invoice not found"
       security:
       - api_key: []
-      x-swagger-router-controller: "Facture"
+      x-swagger-router-controller: "invoice"
+  /invoice/{invoiceId}:
+    get:
+      tags:
+      - "invoice"
+      summary: "Find invoice by ID"
+      description: "Returns a single invoice"
+      operationId: "getInvoiceById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "invoiceId"
+        in: "path"
+        description: "ID of invoice to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/invoice_response_200"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Invoice not found"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Invoice"
     post:
       tags:
-      - "facture"
-      summary: "Updates a facture in the store with form data"
+      - "invoice"
+      summary: "Updates a invoice in the store with form data"
       description: ""
-      operationId: "updateFactureWithForm"
+      operationId: "updateInvoiceWithForm"
       consumes:
       - "application/x-www-form-urlencoded"
       produces:
       - "application/xml"
       - "application/json"
       parameters:
-      - name: "factureId"
+      - name: "invoiceId"
         in: "path"
-        description: "ID of facture that needs to be updated"
+        description: "ID of invoice that needs to be updated"
         required: true
         type: "string"
       - name: "status"
@@ -323,15 +351,15 @@ paths:
           description: "Invalid input"
       security:
       - facturation_auth:
-        - "write:factures"
-        - "read:factures"
-      x-swagger-router-controller: "Facture"
+        - "write:invoices"
+        - "read:invoices"
+      x-swagger-router-controller: "Invoice"
     delete:
       tags:
-      - "facture"
-      summary: "Deletes a facture"
+      - "invoice"
+      summary: "Deletes a invoice"
       description: ""
-      operationId: "deleteFacture"
+      operationId: "deleteInvoice"
       produces:
       - "application/xml"
       - "application/json"
@@ -340,21 +368,21 @@ paths:
         in: "header"
         required: false
         type: "string"
-      - name: "factureId"
+      - name: "invoiceId"
         in: "path"
-        description: "Facture id to delete"
+        description: "Invoice id to delete"
         required: true
         type: "string"
       responses:
         400:
           description: "Invalid ID supplied"
         404:
-          description: "Facture not found"
+          description: "Invoice not found"
       security:
       - facturation_auth:
-        - "write:factures"
-        - "read:factures"
-      x-swagger-router-controller: "Facture"
+        - "write:invoices"
+        - "read:invoices"
+      x-swagger-router-controller: "Invoice"
   /ligne:
     post:
       tags:
@@ -459,7 +487,7 @@ paths:
         description: "ID of ligne that needs to be updated"
         required: true
         type: "string"
-      - name: "factureId"
+      - name: "invoiceId"
         in: "formData"
         required: true
         type: "string"
@@ -694,25 +722,33 @@ securityDefinitions:
     scopes:
       write:customers: "modify customers in your account"
       read:customers: "read your customers"
-      write:factures: "modify factures in your account"
-      read:factures: "read your factures"
-      write:lignes: "modify factures in your account"
-      read:lignes: "read your factures"
-      write:products: "modify factures in your account"
-      read:products: "read your factures"
+      write:invoices: "modify invoices in your account"
+      read:invoices: "read your invoices"
+      write:lignes: "modify invoices in your account"
+      read:lignes: "read your invoices"
+      write:products: "modify invoices in your account"
+      read:products: "read your invoices"
   api_key:
     type: "apiKey"
     name: "api_key"
     in: "header"
 definitions:
-  Facture:
+  Invoice:
     type: "object"
     properties:
       _id:
         type: "string"
       customerId:
         type: "string"
+      number:
+        type: "string"
       creation_date:
+        type: "string"
+        format: "date-time"
+      start_period:
+        type: "string"
+        format: "date-time"
+      end_period:
         type: "string"
         format: "date-time"
       status:
@@ -723,13 +759,13 @@ definitions:
         - "validated"
         - "edited"
     xml:
-      name: "Facture"
+      name: "Invoice"
   Ligne:
     type: "object"
     properties:
       _id:
         type: "string"
-      factureId:
+      invoiceId:
         type: "string"
       productId:
         type: "string"
@@ -798,7 +834,7 @@ definitions:
     properties:
       _id:
         type: "string"
-      factureId:
+      invoiceId:
         type: "string"
       productId:
         type: "string"
@@ -823,13 +859,21 @@ definitions:
         format: "double"
     xml:
       name: "Product"
-  fee_response_200:
+  invoice_response_200:
     properties:
       _id:
         type: "string"
       customerId:
         type: "string"
+      number:
+        type: "string"
       creation_date:
+        type: "string"
+        format: "date-time"
+      start_period:
+        type: "string"
+        format: "date-time"
+      end_period:
         type: "string"
         format: "date-time"
       status:
@@ -840,7 +884,7 @@ definitions:
         - "validated"
         - "edited"
     xml:
-      name: "Facture"
+      name: "Invoice"
   customers_response_200:
     properties:
       customers:
@@ -859,14 +903,22 @@ definitions:
           wrapped: true
         items:
           $ref: "#/definitions/Product"
-  body_fee:
+  body_invoice:
     type: "object"
     properties:
       _id:
         type: "string"
       customerId:
         type: "string"
+      number:
+        type: "string"
       creation_date:
+        type: "string"
+        format: "date-time"
+      start_period:
+        type: "string"
+        format: "date-time"
+      end_period:
         type: "string"
         format: "date-time"
       status:
@@ -877,13 +929,13 @@ definitions:
         - "validated"
         - "edited"
     xml:
-      name: "Facture"
+      name: "Invoice"
   body_line:
     type: "object"
     properties:
       _id:
         type: "string"
-      factureId:
+      invoiceId:
         type: "string"
       productId:
         type: "string"
