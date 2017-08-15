@@ -18,6 +18,7 @@ export class InvoiceService {
   private headers = new Headers({ 'Content-Type': 'application/json' });
   private invoicesUrl = 'http://localhost:3000/v1/invoices';
   private invoiceUrl = 'http://localhost:3000/v1/invoice';
+  private customerUrl = 'http://localhost:3000/v1/customer';
 
   getInvoices(): Promise<Invoice[]> {
     return this.http.get(this.invoicesUrl)
@@ -29,6 +30,14 @@ export class InvoiceService {
 
   getInvoice(id: string): Promise<Invoice> {
     const url = `${this.invoiceUrl}/${id}`;
+    return this.http.get(url)
+      .toPromise()
+      .then(response => response.json().invoice as Invoice)
+      .catch(this.handleError);
+  }
+
+  getInvoiceWithCustomerId(customerId: String): Promise<Invoice> {
+    const url = `${this.customerUrl}/${customerId}/invoice`;
     return this.http.get(url)
       .toPromise()
       .then(response => response.json().invoice as Invoice)
@@ -47,7 +56,7 @@ export class InvoiceService {
   updateInvoice(invoice: Invoice): Promise<Invoice> {
     const url = `${this.invoiceUrl}`;
     return this.http
-      .put(url, JSON.stringify(invoice).replace('"'+ invoice.price.toString() +'"',invoice.price.toString()), { headers: this.headers })
+      .put(url, JSON.stringify(invoice), { headers: this.headers })
       .toPromise()
       .then(() => invoice)
       .catch(this.handleError);

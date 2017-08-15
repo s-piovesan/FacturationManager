@@ -1,7 +1,9 @@
 export class Invoice {
     _id: String;
-    ref: String;
+    number: String;
     customerId: String;
   	creation_date : Date;
+    start_period : Date;
+    end_period : Date;
     status : String;
 }

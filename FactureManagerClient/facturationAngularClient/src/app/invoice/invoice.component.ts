@@ -4,6 +4,8 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Customer } from '../customer';
 import { CustomerService } from '../customer.service';
+import { Invoice } from '../invoice';
+import { InvoiceService } from '../invoice.service';
 
 @Component({
   selector: 'app-invoice',
@@ -13,8 +15,9 @@ import { CustomerService } from '../customer.service';
 export class InvoiceComponent implements OnInit {
 
   customer: Customer;
+  invoice: Invoice;
 
-  constructor(private router: Router, private customerService: CustomerService) {
+  constructor(private router: Router, private customerService: CustomerService, private invoiceService: InvoiceService) {
   }
 
   print(): void {
@@ -39,7 +42,15 @@ export class InvoiceComponent implements OnInit {
     }
 
   ngOnInit() {
-    this.customerService.getCustomer("5984c7249922b1037cb78077").then(customer => this.customer = customer);
+    this.invoiceService.getInvoiceWithCustomerId("5984c7249922b1037cb7807").then(
+      (invoice) => {
+        this.invoice = invoice;
+        this.customerService.getCustomer(invoice.customerId).then(
+          (customer) => {
+            this.customer = customer;
+            console.log(this);
+        })
+      });
   }
 
 }

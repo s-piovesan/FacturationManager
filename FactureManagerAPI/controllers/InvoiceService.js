@@ -64,7 +64,7 @@ exports.getCurrentInvoiceByCustomerId = function(args, res, next) {
    * invoiceId Long ID of invoice to return
    * returns inline_response_200_1
    **/
-   Invoice.findOne({ customerId:args.customerId.value  }).select().exec(function(err, invoice){
+   Invoice.findOne({ customerId:args.customerId.value,status:"under_construction" }).select().exec(function(err, invoice){
      if(err){
          res.status(500).json(err).end();
          return;

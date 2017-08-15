@@ -27,7 +27,7 @@ export class CustomerService {
   }
 
 
-  getCustomer(id: string): Promise<Customer> {
+  getCustomer(id: String): Promise<Customer> {
     const url = `${this.customerUrl}/${id}`;
     return this.http.get(url)
       .toPromise()

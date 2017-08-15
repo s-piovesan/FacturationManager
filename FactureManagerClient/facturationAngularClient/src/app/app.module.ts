@@ -13,7 +13,7 @@ import { ProductsComponent } from './products/products.component';
 import { ProductService } from './product.service';
 
 import { InvoiceComponent } from './invoice/invoice.component';
-
+import { InvoiceService } from './invoice.service';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -46,6 +46,6 @@ import { MaterialModule, MdCoreModule, MdToolbarModule, MdSidenavModule, MdButto
     InvoiceComponent,
   ],
   bootstrap: [AppComponent],
-  providers: [CustomerService, ProductService],
+  providers: [CustomerService, ProductService, InvoiceService],
 })
 export class AppModule { }
