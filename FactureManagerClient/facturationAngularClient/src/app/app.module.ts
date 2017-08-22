@@ -13,7 +13,10 @@ import { ProductsComponent } from './products/products.component';
 import { ProductService } from './product.service';
 
 import { InvoiceComponent } from './invoice/invoice.component';
+import { InvoiceSelectorComponent } from './invoice-selector/invoice-selector.component';
 import { InvoiceService } from './invoice.service';
+
+import { LineService } from './line.service';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -44,8 +47,9 @@ import { MaterialModule, MdCoreModule, MdToolbarModule, MdSidenavModule, MdButto
     ProductsComponent,
     ProductInfoComponent,
     InvoiceComponent,
+    InvoiceSelectorComponent,
   ],
   bootstrap: [AppComponent],
-  providers: [CustomerService, ProductService, InvoiceService],
+  providers: [CustomerService, ProductService, InvoiceService, LineService],
 })
 export class AppModule { }

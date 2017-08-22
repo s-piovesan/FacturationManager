@@ -1,11 +1,13 @@
 import 'rxjs/add/operator/switchMap'
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Location } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { Customer } from '../customer';
 import { CustomerService } from '../customer.service';
 import { Invoice } from '../invoice';
 import { InvoiceService } from '../invoice.service';
+import { Line } from '../line';
+import { LineService } from '../line.service';
 
 @Component({
   selector: 'app-invoice',
@@ -16,8 +18,10 @@ export class InvoiceComponent implements OnInit {
 
   customer: Customer;
   invoice: Invoice;
-
-  constructor(private router: Router, private customerService: CustomerService, private invoiceService: InvoiceService) {
+  lines: Line[];
+  total: number = 0;
+  monthes: string[] = ["janvier","février","mars","avril","mai", "juin", "juillet","aout","septembre", "octobre", "novembre", "decembre"]
+  constructor(private router: Router, private customerService: CustomerService, private lineService: LineService, private invoiceService: InvoiceService) {
   }
 
   print(): void {
@@ -41,6 +45,50 @@ export class InvoiceComponent implements OnInit {
        popupWin.document.close();
     }
 
+  getNextDeliveryDate(lineDate : Date): Date {
+    var daysOfDelivery : number[] = [2,4];
+    var currentDate : Date = new Date(lineDate);
+
+    var minDiff : number = 8;
+    var dayline : number = currentDate.getDay();
+
+    for (var day of daysOfDelivery) {
+      var currentDiff : number = this.getDayDiff(dayline, day);
+
+      if (currentDiff < minDiff){
+        minDiff = currentDiff;
+      }
+
+    }
+
+
+
+    return new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + minDiff);
+  }
+
+  getDayDiff(day1 : number, day2 : number ): number {
+    var dayDiff : number = 0;
+
+    if (day1 < day2){
+      dayDiff = day2 - day1;
+    }
+    if  (day1 == day2){
+      dayDiff = 0;
+    }
+    if  (day1 > day2){
+      dayDiff = (7 - day1) + day2;
+    }
+    return dayDiff;
+
+
+  }
+
+  pad(num:number, size:number): string {
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
+  }
+
   ngOnInit() {
     this.invoiceService.getInvoiceWithCustomerId("5984c7249922b1037cb78077").then(
       (invoice) => {
@@ -49,7 +97,43 @@ export class InvoiceComponent implements OnInit {
           (customer) => {
             this.customer = customer;
         })
+        this.lineService.getLinesWithInvoiceId(invoice._id).then(
+          (lines) => {
+            var lastDeliveryDate : Date = new Date(1970,1,1);
+            this.lines = new Array<Line>();
+            for (var line of lines) {
+                var currentLineDeliveryDate : Date = this.getNextDeliveryDate(line.creationDate)
+
+                if (lastDeliveryDate.getTime() != currentLineDeliveryDate.getTime() ){
+                  lastDeliveryDate = currentLineDeliveryDate;
+
+                  var deliveryLine : Line = new Line()
+                  deliveryLine.invoiceId = "";
+                  deliveryLine.productId = "";
+                  deliveryLine.creationDate= currentLineDeliveryDate;
+                  deliveryLine.description= "Livraison du " + this.pad(currentLineDeliveryDate.getDate(),2) + " " + this.monthes[currentLineDeliveryDate.getMonth()] + " " + currentLineDeliveryDate.getFullYear() ;
+                  deliveryLine.quantity = 0 ;
+                  deliveryLine.price = 0 ;
+                  deliveryLine.isInformationLine = true ;
+
+                    this.lines.push(deliveryLine);
+                    line.isInformationLine = false;
+                    line.total = line.quantity * line.price;
+
+                    this.lines.push(line);
+                    this.total = this.total  + line.total;
+                }else{
+                    line.isInformationLine = false;
+                    line.total = line.quantity * line.price;
+
+                    this.lines.push(line);
+                    this.total = this.total  + line.total;
+                }
+            }
+
+        })
       });
   }
+
 
 }

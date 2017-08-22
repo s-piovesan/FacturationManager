@@ -1,7 +1,7 @@
 export class Customer {
-    _id: String;
-    name: String;
-    address: String;
-    zipcode: String;
-    city: String;
+    _id: string;
+    name: string;
+    address: string;
+    zipcode: string;
+    city: string;
 }

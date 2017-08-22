@@ -1,9 +1,10 @@
 export class Invoice {
-    _id: String;
-    number: String;
-    customerId: String;
+    _id: string;
+    number: string;
+    customerId: string;
   	creation_date : Date;
     start_period : Date;
     end_period : Date;
-    status : String;
+    status : string;
+    total: number;
 }

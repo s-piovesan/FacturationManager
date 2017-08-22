@@ -52,37 +52,17 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr class="category bold">
-                          <th colspan="4">Livraison du 02 mai 2017</th>
-                      </tr>
-                      <tr>
-                        <td>Ourlet</td>
-                        <td>28</td>
-                        <td>4,00 €</td>
-                        <td>112,00 €</td>
-                      </tr>
-                      <tr>
-                        <td>Ourlet ( robe, jupe )</td>
-                        <td>3</td>
-                        <td>4,00 €</td>
-                        <td>12,00 €</td>
-                      </tr>
-                      <tr>
-                        <td>Bas de manches</td>
-                        <td>5</td>
-                        <td>5,00 €</td>
-                        <td>25,00 €</td>
-                      </tr>
-                      <tr>
-                        <td>Reprise taille jean's</td>
-                        <td>1</td>
-                        <td>5,00 €</td>
-                        <td>5,00 €</td>
+                      <tr *ngFor="let line of lines">
+                        <th colspan="4" *ngIf="line.isInformationLine">{{line.description}}</th>
+                        <td *ngIf="line.isInformationLine == false">{{line.description}}</td>
+                        <td *ngIf="line.isInformationLine == false">{{line.quantity}}</td>
+                        <td *ngIf="line.isInformationLine == false">{{line.price | number:'1.2-2'}} €</td>
+                        <td *ngIf="line.isInformationLine == false">{{line.total | number:'1.2-2'}} €</td>
                       </tr>
                       <tr>
                         <td colspan="2"></td>
                         <td class="grey lighten-2 black-text">Total</td>
-                        <td class="grey lighten-2 strong black-text">5871,90 €</td>
+                        <td class="grey lighten-2 strong black-text">{{total | number:'1.2-2'}} €</td>
                       </tr>
                     </tbody>
                   </table>

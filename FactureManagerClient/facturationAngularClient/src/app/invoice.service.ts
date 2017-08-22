@@ -36,7 +36,7 @@ export class InvoiceService {
       .catch(this.handleError);
   }
 
-  getInvoiceWithCustomerId(customerId: String): Promise<Invoice> {
+  getInvoiceWithCustomerId(customerId: string): Promise<Invoice> {
     const url = `${this.customerUrl}/${customerId}/invoice`;
     return this.http.get(url)
       .toPromise()
