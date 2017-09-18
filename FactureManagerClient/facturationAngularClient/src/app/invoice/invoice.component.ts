@@ -1,5 +1,5 @@
 import 'rxjs/add/operator/switchMap'
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit,OnChanges , Input, SimpleChanges , SimpleChange } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { Customer } from '../customer';
@@ -14,8 +14,9 @@ import { LineService } from '../line.service';
   templateUrl: './invoice.component.html',
   styleUrls: ['./invoice.component.css']
 })
-export class InvoiceComponent implements OnInit {
+export class InvoiceComponent implements OnInit, OnChanges {
 
+  @Input() invoiceId : string;
   customer: Customer;
   invoice: Invoice;
   lines: Line[];
@@ -89,50 +90,64 @@ export class InvoiceComponent implements OnInit {
     return s;
   }
 
-  ngOnInit() {
-    this.invoiceService.getInvoiceWithCustomerId("5984c7249922b1037cb78077").then(
+  loadData():void {
+    this.invoiceService.getInvoice(this.invoiceId).then(
       (invoice) => {
-        this.invoice = invoice;
-        this.customerService.getCustomer(invoice.customerId).then(
-          (customer) => {
-            this.customer = customer;
-        })
-        this.lineService.getLinesWithInvoiceId(invoice._id).then(
-          (lines) => {
-            var lastDeliveryDate : Date = new Date(1970,1,1);
-            this.lines = new Array<Line>();
-            for (var line of lines) {
-                var currentLineDeliveryDate : Date = this.getNextDeliveryDate(line.creationDate)
+        if (invoice != null) {
+          this.invoice = invoice;
+          this.customerService.getCustomer(invoice.customerId).then(
+            (customer) => {
+              this.customer = customer;
+          })
+          this.lineService.getLinesWithInvoiceId(invoice._id).then(
+            (lines) => {
+              var lastDeliveryDate : Date = new Date(1970,1,1);
+              this.lines = new Array<Line>();
+              for (var line of lines) {
+                  var currentLineDeliveryDate : Date = this.getNextDeliveryDate(line.creationDate)
 
-                if (lastDeliveryDate.getTime() != currentLineDeliveryDate.getTime() ){
-                  lastDeliveryDate = currentLineDeliveryDate;
+                  if (lastDeliveryDate.getTime() != currentLineDeliveryDate.getTime() ){
+                    lastDeliveryDate = currentLineDeliveryDate;
 
-                  var deliveryLine : Line = new Line()
-                  deliveryLine.invoiceId = "";
-                  deliveryLine.productId = "";
-                  deliveryLine.creationDate= currentLineDeliveryDate;
-                  deliveryLine.description= "Livraison du " + this.pad(currentLineDeliveryDate.getDate(),2) + " " + this.monthes[currentLineDeliveryDate.getMonth()] + " " + currentLineDeliveryDate.getFullYear() ;
-                  deliveryLine.quantity = 0 ;
-                  deliveryLine.price = 0 ;
-                  deliveryLine.isInformationLine = true ;
+                    var deliveryLine : Line = new Line()
+                    deliveryLine.invoiceId = "";
+                    deliveryLine.productId = "";
+                    deliveryLine.creationDate= currentLineDeliveryDate;
+                    deliveryLine.description= "Livraison du " + this.pad(currentLineDeliveryDate.getDate(),2) + " " + this.monthes[currentLineDeliveryDate.getMonth()] + " " + currentLineDeliveryDate.getFullYear() ;
+                    deliveryLine.quantity = 0 ;
+                    deliveryLine.price = 0 ;
+                    deliveryLine.isInformationLine = true ;
 
-                    this.lines.push(deliveryLine);
-                    line.isInformationLine = false;
-                    line.total = line.quantity * line.price;
+                      this.lines.push(deliveryLine);
+                      line.isInformationLine = false;
+                      line.total = line.quantity * line.price;
 
-                    this.lines.push(line);
-                    this.total = this.total  + line.total;
-                }else{
-                    line.isInformationLine = false;
-                    line.total = line.quantity * line.price;
+                      this.lines.push(line);
+                      this.total = this.total  + line.total;
+                  }else{
+                      line.isInformationLine = false;
+                      line.total = line.quantity * line.price;
 
-                    this.lines.push(line);
-                    this.total = this.total  + line.total;
-                }
-            }
+                      this.lines.push(line);
+                      this.total = this.total  + line.total;
+                  }
+              }
 
-        })
+          })
+        }else{
+            this.invoice = null;
+        }
       });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+
+    this.loadData();
+
+  }
+
+  ngOnInit() {
+      this.loadData();
   }
 
 

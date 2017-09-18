@@ -1,10 +1,11 @@
-<div class="customers" *ngIf="customers">
+<div class="customers" materialize *ngIf="customers">
+<form materialize>
   <div class="input-field col s12">
-      <select>
-        <option value="" disabled selected>Choose your option</option>
-        <option *ngFor="let customer of customers" value="{{customer._id}}">{{customer.name}}</option>
+      <select materialize="material_select" name="customer" [ngModel]="selectedCustomer" (ngModelChange)="onCustomerChange($event)">
+        <option *ngFor="let customer of customers" [value]="customer | json">{{customer.name}}</option>
       </select>
     </div>
+</form>
 </div>
-<app-invoice *ngIf="invoice">
+<app-invoice *ngIf="invoice" [invoiceId]="invoice._id">
 </app-invoice>

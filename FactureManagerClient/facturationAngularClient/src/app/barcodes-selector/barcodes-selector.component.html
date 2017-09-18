@@ -1,0 +1,25 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<h2>Barcodes</h2>
+
+<div class="customers" materialize *ngIf="customers">
+  <form materialize>
+    <div class="input-field col s12">
+        <select materialize="material_select" name="customer" [ngModel]="selectedCustomer" (ngModelChange)="onCustomerChange($event)">
+          <option *ngFor="let customer of customers" [value]="customer | json">{{customer.name}}</option>
+        </select>
+      </div>
+  </form>
+</div>
+<div class="barcodes" *ngIf="selectedCustomer">
+    <h4>{{selectedCustomer.name}}</h4>
+    <md-grid-list cols="3" rowHeight="1:1">
+      <md-grid-tile *ngFor="let product of products">
+        <md-card >
+          <md-card-header>
+            <md-card-title style="width:150px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis;">{{product.description}}</md-card-title>
+          </md-card-header>
+          <qr-code [value]="'http://localhost:3000/customer/'+ selectedCustomer._id + '/product/' + product._id +'/line'" [size]="150"></qr-code>
+        </md-card>
+      </md-grid-tile>
+    </md-grid-list>
+</div>

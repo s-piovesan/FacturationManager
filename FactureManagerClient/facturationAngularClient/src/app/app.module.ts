@@ -3,6 +3,11 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
+import 'hammerjs';
+import "materialize-css";
+import { MaterializeModule } from "angular2-materialize";
+
+
 import { AppComponent } from './app.component';
 import { CustomerInfoComponent } from './customer-info/customer-info.component';
 import { CustomersComponent } from './customers/customers.component';
@@ -16,13 +21,14 @@ import { InvoiceComponent } from './invoice/invoice.component';
 import { InvoiceSelectorComponent } from './invoice-selector/invoice-selector.component';
 import { InvoiceService } from './invoice.service';
 
-import { LineService } from './line.service';
+import {BarcodesComponent} from './Barcodes/barcodes.component';
 
+import { LineService } from './line.service';
+import { QRCodeModule } from 'angular2-qrcode';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { MaterialModule, MdCoreModule, MdToolbarModule, MdSidenavModule, MdButtonModule, MdChipsModule, MdListModule, MdInputModule } from '@angular/material';
-
 
 @NgModule({
   imports: [
@@ -38,7 +44,9 @@ import { MaterialModule, MdCoreModule, MdToolbarModule, MdSidenavModule, MdButto
      MdButtonModule,
      MdChipsModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MaterializeModule,
+    QRCodeModule,
   ],
   declarations: [
     AppComponent,
@@ -48,6 +56,7 @@ import { MaterialModule, MdCoreModule, MdToolbarModule, MdSidenavModule, MdButto
     ProductInfoComponent,
     InvoiceComponent,
     InvoiceSelectorComponent,
+    BarcodesComponent
   ],
   bootstrap: [AppComponent],
   providers: [CustomerService, ProductService, InvoiceService, LineService],

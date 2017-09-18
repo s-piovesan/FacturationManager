@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'Code39';
+  src:  url('code39.woff') format('woff');
+}
+
+
+.customers{
+  height:100px;
+}
