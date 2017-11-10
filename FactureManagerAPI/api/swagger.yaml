@@ -23,6 +23,10 @@ tags:
   description: "gestion des lines de invoice"
 - name: "product"
   description: "gestion des products"
+- name: "barcode"
+  description: "gestion des barcode"
+- name: "barcodes"
+  description: "gestion des barcodes"
 schemes:
 - "http"
 paths:
@@ -775,6 +779,186 @@ paths:
       security:
       - api_key: []
       x-swagger-router-controller: "Lines"
+  /barcode:
+    post:
+      tags:
+      - "barcode"
+      summary: "Ajoute un nouveau barcode"
+      description: ""
+      operationId: "addBarcode"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "description d'un barcode à ajouter a la base de données"
+        required: true
+        schema:
+          $ref: "#/definitions/body_barcode"
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - facturation_auth:
+        - "write:barcodes"
+        - "read:barcodes"
+      x-swagger-router-controller: "Barcode"
+    put:
+      tags:
+      - "barcode"
+      summary: "Met à jour un barcode existant"
+      description: ""
+      operationId: "updateBarcode"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "description d'un barcode à ajouter a la base de données"
+        required: true
+        schema:
+          $ref: "#/definitions/body_barcode"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Barcode not found"
+        405:
+          description: "Validation exception"
+      security:
+      - facturation_auth:
+        - "write:barcodes"
+        - "read:barcodes"
+      x-swagger-router-controller: "Barcode"
+  /barcode/{barcodeId}:
+    get:
+      tags:
+      - "barcode"
+      summary: "Find barcode by ID"
+      description: "Returns a single barcode"
+      operationId: "getBarcodeById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "barcodeId"
+        in: "path"
+        description: "ID of barcode to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/barcode_response_200"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Barcode not found"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Barcode"
+    post:
+      tags:
+      - "barcode"
+      summary: "Updates a barcode in the store with form data"
+      description: ""
+      operationId: "updateBarcodeWithForm"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "barcodeId"
+        in: "path"
+        description: "ID of barcode that needs to be updated"
+        required: true
+        type: "string"
+      - name: "productId"
+        in: "formData"
+        description: ""
+        required: false
+        type: "string"
+      - name: "customerId"
+        in: "formData"
+        description: ""
+        required: false
+        type: "string"
+      - name: "value"
+        in: "formData"
+        description: ""
+        required: false
+        type: "integer"
+        format: "int32"
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - facturation_auth:
+        - "write:barcodes"
+        - "read:barcodes"
+      x-swagger-router-controller: "Barcode"
+    delete:
+      tags:
+      - "barcode"
+      summary: "Deletes a barcode"
+      description: ""
+      operationId: "deleteBarcode"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "api_key"
+        in: "header"
+        required: false
+        type: "string"
+      - name: "barcodeId"
+        in: "path"
+        description: "Barcode id to delete"
+        required: true
+        type: "string"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Barcode not found"
+      security:
+      - facturation_auth:
+        - "write:barcodes"
+        - "read:barcodes"
+      x-swagger-router-controller: "Barcode"
+  /barcodes:
+    get:
+      tags:
+      - "barcodes"
+      summary: "Find barcodes"
+      description: "Returns all barcodes"
+      operationId: "getBarcodes"
+      produces:
+      - "application/xml"
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/barcodes_response_200"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "no barcode not found"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Barcodes"
+ 
 securityDefinitions:
   facturation_auth:
     type: "oauth2"
@@ -789,6 +973,8 @@ securityDefinitions:
       read:lines: "read your invoices"
       write:products: "modify invoices in your account"
       read:products: "read your invoices"
+      write:barcodes: "modify barcodes"
+      read:barcodes: "read barcodes"
   api_key:
     type: "apiKey"
     name: "api_key"
@@ -870,6 +1056,20 @@ definitions:
         type: "string"
     xml:
       name: "Customer"
+  Barcode:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      productId:
+        type: "string"
+      customerId:
+        type: "string"
+      value:
+        type: "integer"
+        format: "int64"
+    xml:
+      name: "Barcode"
   ApiResponse:
     type: "object"
     properties:
@@ -894,6 +1094,19 @@ definitions:
         type: "string"
     xml:
       name: "Customer"
+  barcode_response_200:
+    properties:
+      _id:
+        type: "string"
+      productId:
+        type: "string"
+      customerId:
+        type: "string"
+      value:
+        type: "integer"
+        format: "int64"
+    xml:
+      name: "Barcode"
   line_response_200:
     properties:
       _id:
@@ -961,6 +1174,15 @@ definitions:
           wrapped: true
         items:
           $ref: "#/definitions/Customer"
+  barcodes_response_200:
+    properties:
+      barcodes:
+        type: "array"
+        xml:
+          name: "Barcodes"
+          wrapped: true
+        items:
+          $ref: "#/definitions/Barcode"
   products_response_200:
     properties:
       customers:
@@ -1049,6 +1271,20 @@ definitions:
         type: "string"
     xml:
       name: "Customer"
+  body_barcode:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      productId:
+        type: "string"
+      customerId:
+        type: "string"
+      value:
+        type: "integer"
+        format: "int64"
+    xml:
+      name: "Barcode"
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"
