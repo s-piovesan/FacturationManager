@@ -27,6 +27,10 @@ tags:
   description: "gestion des barcode"
 - name: "barcodes"
   description: "gestion des barcodes"
+- name: "price"
+  description: "gestion des prix des produits par client"
+- name: "prices"
+  description: "gestion des prix des produits par client"
 schemes:
 - "http"
 paths:
@@ -959,7 +963,7 @@ paths:
       - api_key: []
       x-swagger-router-controller: "Barcodes"
   /customer/{customerId}/product/{productId}/barcode:
-    get:
+    post:
       tags:
       - "barcode"
       summary: "add a barcode for the current product and customer"
@@ -1019,6 +1023,279 @@ paths:
       security:
       - api_key: []
       x-swagger-router-controller: "Barcodes"
+    get:
+      tags:
+      - "barcodes"
+      summary: "get All barcodes for the customer in parameter"
+      description: "add barcodes for all product for the customer in parameter"
+      operationId: "getBarCodesForCustomer"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "customerId"
+        in: "path"
+        description: "ID of customer"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/barcodes_response_200"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Customer not found"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Barcodes"
+  
+  /price:
+    post:
+      tags:
+      - "price"
+      summary: "Ajoute un nouveau price"
+      description: ""
+      operationId: "addPrice"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "description d'un price à ajouter a la base de données"
+        required: true
+        schema:
+          $ref: "#/definitions/body_price"
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - facturation_auth:
+        - "write:prices"
+        - "read:prices"
+      x-swagger-router-controller: "Price"
+    put:
+      tags:
+      - "price"
+      summary: "Met à jour un price existant"
+      description: ""
+      operationId: "updatePrice"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "description d'un price à ajouter a la base de données"
+        required: true
+        schema:
+          $ref: "#/definitions/body_price"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Price not found"
+        405:
+          description: "Validation exception"
+      security:
+      - facturation_auth:
+        - "write:prices"
+        - "read:prices"
+      x-swagger-router-controller: "Price"
+  /price/{priceId}:
+    get:
+      tags:
+      - "price"
+      summary: "Find price by ID"
+      description: "Returns a single price"
+      operationId: "getPriceById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "priceId"
+        in: "path"
+        description: "ID of price to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/price_response_200"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Price not found"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Price"
+    post:
+      tags:
+      - "price"
+      summary: "Updates a price in the store with form data"
+      description: ""
+      operationId: "updatePriceWithForm"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "priceId"
+        in: "path"
+        description: "ID of price that needs to be updated"
+        required: true
+        type: "string"
+      - name: "productId"
+        in: "formData"
+        description: ""
+        required: false
+        type: "string"
+      - name: "customerId"
+        in: "formData"
+        description: ""
+        required: false
+        type: "string"
+      - name: "price"
+        in: "formData"
+        description: ""
+        required: true
+        type: "number"
+        format: "double"
+      responses:
+        405:
+          description: "Invalid input"
+      security:
+      - facturation_auth:
+        - "write:prices"
+        - "read:prices"
+      x-swagger-router-controller: "Price"
+    delete:
+      tags:
+      - "price"
+      summary: "Deletes a price"
+      description: ""
+      operationId: "deletePrice"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "api_key"
+        in: "header"
+        required: false
+        type: "string"
+      - name: "priceId"
+        in: "path"
+        description: "Price id to delete"
+        required: true
+        type: "string"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Price not found"
+      security:
+      - facturation_auth:
+        - "write:prices"
+        - "read:prices"
+      x-swagger-router-controller: "Price"
+  /prices:
+    get:
+      tags:
+      - "prices"
+      summary: "Find prices"
+      description: "Returns all prices"
+      operationId: "getPrices"
+      produces:
+      - "application/xml"
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/prices_response_200"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "price not found"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Prices"
+  /customer/{customerId}/product/{productId}/price:
+    post:
+      tags:
+      - "price"
+      summary: "add a custom price for the current product and customer"
+      description: "add a custom price for the current product and customer"
+      operationId: "addBarCodeForProductAndCustomer"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "customerId"
+        in: "path"
+        description: "ID of customer"
+        required: true
+        type: "string"
+      - name: "productId"
+        in: "path"
+        description: "ID of product"
+        required: true
+        type: "string"
+      - name: "price"
+        in: "formData"
+        required: true
+        type: "number"
+        format: "double"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/price_response_200"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Customer not found"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Price"
+  /customer/{customerId}/prices:
+    get:
+      tags:
+      - "prices"
+      summary: "get All prices for the customer in parameter"
+      description: "add prices for all product for the customer in parameter"
+      operationId: "getBarCodesForCustomer"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "customerId"
+        in: "path"
+        description: "ID of customer"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/prices_response_200"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Customer not found"
+      security:
+      - api_key: []
+      x-swagger-router-controller: "Prices"
   
   
 securityDefinitions:
@@ -1037,6 +1314,8 @@ securityDefinitions:
       read:products: "read your invoices"
       write:barcodes: "modify barcodes"
       read:barcodes: "read barcodes"
+      write:prices: "modify prices"
+      read:prices: "read prices"
   api_key:
     type: "apiKey"
     name: "api_key"
@@ -1132,6 +1411,20 @@ definitions:
         format: "int64"
     xml:
       name: "Barcode"
+  Price:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      productId:
+        type: "string"
+      customerId:
+        type: "string"
+      price:
+        type: "number"
+        format: "double"
+    xml:
+      name: "Barcode"
   ApiResponse:
     type: "object"
     properties:
@@ -1169,6 +1462,19 @@ definitions:
         format: "int64"
     xml:
       name: "Barcode"
+  price_response_200:
+    properties:
+      _id:
+        type: "string"
+      productId:
+        type: "string"
+      customerId:
+        type: "string"
+      price:
+        type: "number"
+        format: "double"
+    xml:
+      name: "Price"
   line_response_200:
     properties:
       _id:
@@ -1245,6 +1551,15 @@ definitions:
           wrapped: true
         items:
           $ref: "#/definitions/Barcode"
+  prices_response_200:
+    properties:
+      prices:
+        type: "array"
+        xml:
+          name: "Prices"
+          wrapped: true
+        items:
+          $ref: "#/definitions/Price"
   products_response_200:
     properties:
       customers:
@@ -1347,6 +1662,20 @@ definitions:
         format: "int64"
     xml:
       name: "Barcode"
+  body_price:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      productId:
+        type: "string"
+      customerId:
+        type: "string"
+      value:
+        type: "number"
+        format: "double"
+    xml:
+      name: "Price"
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"
